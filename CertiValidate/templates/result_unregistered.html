@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5 pt-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-9">
+
+      <div class="result-banner banner-fake mb-4" data-aos="zoom-in">
+        <div class="banner-icon"><i class="fa-solid fa-circle-xmark"></i></div>
+        <div class="banner-text">
+          <h1 class="banner-title">FAKE / UNREGISTERED CERTIFICATE</h1>
+          <p class="banner-sub">This document is not registered in the CertiValidate database or blockchain ledger.</p>
+        </div>
+        <div class="confidence-badge">
+          <span class="conf-label-big" style="color:#ef4444;">{{ ai_result.final_score }}%</span>
+          <div style="font-size:.7rem;color:rgba(255,255,255,.7);text-transform:uppercase;">AI Score</div>
+        </div>
+      </div>
+
+      <div class="result-card">
+        <div class="rc-header">
+          <i class="fa-solid fa-triangle-exclamation" style="color:#ef4444"></i>
+          <span style="color:#ef4444">Fake Certificate Reasons</span>
+        </div>
+        <div class="rc-body">
+          <ul class="fake-reasons-list">
+            {% for r in ai_result.fake_reasons %}
+            <li><i class="fa-solid fa-xmark me-2 text-danger"></i>{{ r }}</li>
+            {% endfor %}
+            {% if not ai_result.fake_reasons %}
+            <li><i class="fa-solid fa-xmark me-2 text-danger"></i>Certificate ID not found in MongoDB database</li>
+            <li><i class="fa-solid fa-xmark me-2 text-danger"></i>Blockchain hash could not be verified</li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+
+      {% if ai_result.entities %}
+      <div class="result-card mt-4">
+        <div class="rc-header">
+          <i class="fa-solid fa-magnifying-glass-chart"></i>
+          <span>OCR Extracted Details (Unverified)</span>
+        </div>
+        <div class="rc-body">
+          <div class="detail-grid">
+            <div class="dg-item"><span class="dg-label">Detected University</span><span class="dg-value">{{ ai_result.entities.get('university_name','Not detected') }}</span></div>
+            <div class="dg-item"><span class="dg-label">Detected Name</span><span class="dg-value">{{ ai_result.entities.get('student_name','Not detected') }}</span></div>
+            <div class="dg-item"><span class="dg-label">Detected Cert ID</span><span class="dg-value font-monospace">{{ ai_result.entities.get('certificate_id','Not detected') }}</span></div>
+            <div class="dg-item"><span class="dg-label">Detected Date</span><span class="dg-value">{{ ai_result.entities.get('issue_date','Not detected') }}</span></div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="text-center mt-4 pb-4">
+        <a href="{{ url_for('verify') }}" class="back-link">
+          <i class="fa-solid fa-arrow-left me-1"></i>Verify Another Certificate
+        </a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<style>
+.result-banner{display:flex;align-items:center;gap:1.5rem;border-radius:1.25rem;padding:1.5rem 2rem;box-shadow:0 8px 32px rgba(0,0,0,.18);}
+.banner-fake{background:linear-gradient(135deg,#7f1d1d,#dc2626);color:#fff;}
+.banner-icon{font-size:3rem;line-height:1;flex-shrink:0;}
+.banner-text{flex:1;}
+.banner-title{font-size:1.5rem;font-weight:800;margin:0 0 .2rem;}
+.banner-sub{font-size:.875rem;opacity:.85;margin:0;}
+.conf-label-big{font-size:2.5rem;font-weight:800;display:block;}
+.result-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);border-radius:1rem;overflow:hidden;backdrop-filter:blur(12px);box-shadow:0 4px 20px rgba(0,0,0,.15);}
+.rc-header{display:flex;align-items:center;gap:.6rem;padding:.85rem 1.25rem;background:rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.08);font-weight:700;font-size:.95rem;}
+.rc-body{padding:1.25rem;}
+.fake-reasons-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.5rem;}
+.fake-reasons-list li{font-size:.875rem;display:flex;align-items:flex-start;gap:.4rem;}
+.detail-grid{display:grid;gap:.75rem;}
+.dg-item{display:flex;flex-direction:column;gap:.1rem;}
+.dg-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;opacity:.55;}
+.dg-value{font-size:.95rem;}
+.back-link{color:rgba(255,255,255,.5);text-decoration:none;font-size:.875rem;transition:color .2s;}
+.back-link:hover{color:rgba(255,255,255,.9);}
+</style>
+{% endblock %}

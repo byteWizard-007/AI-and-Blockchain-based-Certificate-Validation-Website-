@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fa-solid fa-search text-primary me-2"></i> Certificate Search</h2>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-primary"><i class="fa-solid fa-arrow-left"></i> Back
+            to Dashboard</a>
+    </div>
+
+    <div class="card glass-card border-0 shadow-sm mb-4 p-4">
+        <form action="{{ url_for('search') }}" method="GET" class="d-flex gap-2">
+            <input type="text" name="q" class="form-control form-control-lg"
+                placeholder="Search by name, reg no, course, year, or hash..." value="{{ query }}">
+            <button type="submit" class="btn btn-primary btn-lg px-4"><i class="fa-solid fa-magnifying-glass"></i>
+                Search</button>
+            <a href="{{ url_for('search') }}" class="btn btn-light btn-lg px-4 border">Clear</a>
+        </form>
+    </div>
+
+    <div class="card glass-card border-0 shadow-sm p-4">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Reg. No</th>
+                        <th>Student Name</th>
+                        <th>Course</th>
+                        <th>Year</th>
+                        <th>AI Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cert in certs %}
+                    <tr>
+                        <td class="fw-bold">{{ cert.register_number }}</td>
+                        <td>{{ cert.student_name }}</td>
+                        <td>{{ cert.course }}</td>
+                        <td>{{ cert.year }}</td>
+                        <td>
+                            {% if cert.ai_status == 'Genuine' %}
+                            <span class="badge bg-success rounded-pill px-3 py-2">Genuine</span>
+                            {% elif cert.ai_status == 'Suspicious' %}
+                            <span class="badge bg-warning text-dark rounded-pill px-3 py-2">Suspicious</span>
+                            {% else %}
+                            <span class="badge bg-danger rounded-pill px-3 py-2">Fake</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('result', cert_id=cert.id) }}"
+                                class="btn btn-sm btn-primary rounded-pill px-3">View</a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-5">
+                            <i class="fa-solid fa-folder-open fa-3x mb-3 text-light"></i>
+                            <p class="mb-0">No certificates found matching your search.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

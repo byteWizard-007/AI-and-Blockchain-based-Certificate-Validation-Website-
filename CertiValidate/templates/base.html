@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CertiValidate - AI & Blockchain Validation</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- AOS Animations -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top shadow-sm">
+      <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="{{ url_for('index') }}">
+            <i class="fa-solid fa-shield-halved fa-lg text-primary me-2"></i> 
+            <span class="fw-bold fs-4">CertiValidate</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto align-items-center gap-2">
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}"><i class="fa-solid fa-house"></i> Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('verify') }}"><i class="fa-solid fa-check-double"></i> Verify</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('ai_analysis_page') }}"><i class="fa-solid fa-robot"></i> AI Demo</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}"><i class="fa-solid fa-circle-info"></i> About</a></li>
+            
+            {% if session.get('user_id') %}
+                <li class="nav-item"><a class="nav-link text-primary fw-bold" href="{{ url_for('dashboard') }}"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+                <li class="nav-item"><a class="btn btn-outline-danger btn-sm rounded-pill px-3" href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+            {% else %}
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}"><i class="fa-solid fa-user"></i> Login</a></li>
+                <li class="nav-item"><a class="btn btn-primary btn-sm rounded-pill px-3 text-white" href="{{ url_for('register') }}"><i class="fa-solid fa-user-plus"></i> Register</a></li>
+            {% endif %}
+            
+            <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
+                <button id="theme-toggle" class="btn btn-sm btn-outline-secondary rounded-circle shadow-sm" style="width: 35px; height: 35px;">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Flash Messages Container -->
+    <div id="flash-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message" data-category="{{ category }}" data-text="{{ message }}"></div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main Content -->
+    <main style="margin-top: 80px; min-height: 80vh;">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 mt-5 bg-dark text-light w-100 mt-auto">
+        <div class="container">
+            <p class="mb-0"><i class="fa-solid fa-shield-halved text-primary"></i> © 2026 CertiValidate. Built for Final Year Project.</p>
+        </div>
+    </footer>
+
+    <!-- Blockchain Action Loader Overlay -->
+    <div id="loading-overlay">
+        <div class="loader-container p-5 glass-card" style="background: rgba(0,0,0,0.7); max-width: 400px; border-radius: 20px;">
+            <div class="blockchain-loader"></div>
+            <h4 class="mt-4 fw-bold">Processing...</h4>
+            <p class="text-light mb-0" style="font-size: 0.9rem;">Executing Smart Contract & AI Models.</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        AOS.init({ duration: 800, once: true });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

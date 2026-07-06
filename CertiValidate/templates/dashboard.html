@@ -1,0 +1,294 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid px-0 h-100">
+    <div class="row g-0 h-100">
+        <!-- Sidebar -->
+        <div class="col-lg-2 sidebar d-none d-lg-block p-3 pt-5">
+            <h6 class="text-uppercase text-muted fw-bold mb-3 px-3">Menu</h6>
+            <nav class="nav flex-column">
+                <a class="nav-link active fw-bold" href="{{ url_for('dashboard') }}"><i
+                        class="fa-solid fa-chart-pie me-2"></i> Overview</a>
+
+                {% if session.get('user_role') == 'admin' %}
+                <a class="nav-link" href="{{ url_for('upload') }}"><i class="fa-solid fa-cloud-arrow-up me-2"></i>
+                    Upload Certificate</a>
+                {% endif %}
+
+                <a class="nav-link" href="{{ url_for('verify') }}"><i class="fa-solid fa-check-double me-2"></i> Verify
+                    Ledger</a>
+                <a class="nav-link" href="{{ url_for('ai_analysis_page') }}"><i class="fa-solid fa-vial me-2"></i> AI
+                    Tests</a>
+                <a class="nav-link" href="{{ url_for('search') }}"><i class="fa-solid fa-magnifying-glass me-2"></i>
+                    Search</a>
+                <a class="nav-link" href="{{ url_for('explorer') }}"><i class="fa-solid fa-link me-2"></i> Explorer</a>
+                <a class="nav-link" href="{{ url_for('history') }}"><i class="fa-solid fa-clock-rotate-left me-2"></i>
+                    History</a>
+
+                <hr class="my-3">
+                <h6 class="text-uppercase text-muted fw-bold mb-3 px-3">Profile</h6>
+                <div class="px-3">
+                    <p class="mb-1 text-primary fw-bold">{{ session.get('user_name') }}</p>
+                    <span class="badge bg-secondary rounded-pill text-capitalize">{{ session.get('user_role') }}</span>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Main Dashboard Content -->
+        <div class="col-lg-10 p-4 p-lg-5 bg-light h-100" style="min-height: 80vh;">
+            <div class="d-flex justify-content-between align-items-center mb-4" data-aos="fade-down">
+                <div>
+                    <h2 class="fw-bold mb-0">Dashboard Overview</h2>
+                    <p class="text-muted">Monitor and track system metrics.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary rounded-pill shadow-sm dropdown-toggle" type="button"
+                            data-bs-toggle="dropdown">
+                            <i class="fa-solid fa-download me-1"></i> Export Data
+                        </button>
+                        <ul class="dropdown-menu shadow">
+                            <li><a class="dropdown-item" href="{{ url_for('export_data', data_type='users') }}"><i
+                                        class="fa-solid fa-users text-primary me-2"></i> Users (CSV)</a></li>
+                            <li><a class="dropdown-item"
+                                    href="{{ url_for('export_data', data_type='certificates') }}"><i
+                                        class="fa-solid fa-file-contract text-warning me-2"></i> Certificates (CSV)</a>
+                            </li>
+                            <li><a class="dropdown-item" href="{{ url_for('export_data', data_type='logs') }}"><i
+                                        class="fa-solid fa-clock-rotate-left text-success me-2"></i> Logs (CSV)</a></li>
+                        </ul>
+                    </div>
+                    {% if session.get('user_role') == 'admin' %}
+                    <a href="{{ url_for('upload') }}" class="btn btn-primary rounded-pill shadow-sm"><i
+                            class="fa-solid fa-plus me-1"></i> New Certificate</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="row g-4 mb-5">
+                <div class="col-xl-3 col-md-6" data-aos="zoom-in" data-aos-delay="50">
+                    <div class="card glass-card dash-card success h-100 border-0 shadow-sm rounded-4 p-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="text-muted fw-bold text-uppercase mb-2">Total Blocks</h6>
+                                    <h2 class="fw-bold mb-0">{{ blocks_count }}</h2>
+                                </div>
+                                <div class="dash-icon text-success"><i class="fa-solid fa-cubes"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="card glass-card dash-card warning h-100 border-0 shadow-sm rounded-4 p-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="text-muted fw-bold text-uppercase mb-2">Certificates</h6>
+                                    <h2 class="fw-bold mb-0">{{ certs_count }}</h2>
+                                </div>
+                                <div class="dash-icon text-warning"><i class="fa-solid fa-file-contract"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6" data-aos="zoom-in" data-aos-delay="150">
+                    <div class="card glass-card dash-card danger h-100 border-0 shadow-sm rounded-4 p-3 border-start-primary"
+                        style="border-left-color: var(--primary-color);">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="text-muted fw-bold text-uppercase mb-2">Active Users</h6>
+                                    <h2 class="fw-bold mb-0">{{ users_count }}</h2>
+                                </div>
+                                <div class="dash-icon text-primary"><i class="fa-solid fa-users"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="card glass-card dash-card success h-100 border-0 shadow-sm rounded-4 p-3"
+                        style="border-left-color: #9b59b6;">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="text-muted fw-bold text-uppercase mb-2">Avg AI Score</h6>
+                                    <h2 class="fw-bold mb-0">{{ avg_score }}%</h2>
+                                </div>
+                                <div class="dash-icon" style="color: #9b59b6;"><i class="fa-solid fa-brain"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Advanced Analytics Charts -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-4" data-aos="fade-up">
+                    <div class="card glass-card border-0 shadow-sm rounded-4 h-100">
+                        <div class="card-header bg-transparent border-0 pt-4 pb-0 px-4">
+                            <h6 class="fw-bold mb-0 text-muted text-uppercase small">Verifications / Month</h6>
+                        </div>
+                        <div class="card-body p-3" style="position: relative; height: 250px;">
+                            <canvas id="trendChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="card glass-card border-0 shadow-sm rounded-4 h-100">
+                        <div class="card-header bg-transparent border-0 pt-4 pb-0 px-4">
+                            <h6 class="fw-bold mb-0 text-muted text-uppercase small">Authenticity Ratio</h6>
+                        </div>
+                        <div class="card-body p-3" style="position: relative; height: 250px;">
+                            <canvas id="confidenceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card glass-card border-0 shadow-sm rounded-4 h-100">
+                        <div class="card-header bg-transparent border-0 pt-4 pb-0 px-4">
+                            <h6 class="fw-bold mb-0 text-muted text-uppercase small">Score Distribution</h6>
+                        </div>
+                        <div class="card-body p-3" style="position: relative; height: 250px;">
+                            <canvas id="distChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity Table -->
+            <div class="row g-4">
+                <div class="col-12" data-aos="fade-up" data-aos-delay="300">
+                    <div class="card glass-card border-0 shadow-sm rounded-4 h-100">
+                        <div
+                            class="card-header bg-transparent border-0 pt-4 pb-0 px-4 d-flex justify-content-between align-items-center">
+                            <h5 class="fw-bold mb-0"><i class="fa-solid fa-clock-rotate-left me-2 text-primary"></i>
+                                Recent Verifications</h5>
+                            <a href="{{ url_for('history') }}"
+                                class="btn btn-sm btn-outline-primary rounded-pill px-3">View All Logs</a>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Time</th>
+                                            <th>Reg. No</th>
+                                            <th>AI Score</th>
+                                            <th>Result</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for log in recent_activity %}
+                                        <tr>
+                                            <td class="text-muted small">{{ log.timestamp }}</td>
+                                            <td class="fw-bold">{{ log.register_number or ('Cert ID #' ~
+                                                log.certificate_id) }}</td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <span class="me-2 fw-bold">{{ log.authenticity_score }}%</span>
+                                                    <div class="progress flex-grow-1" style="height: 6px;">
+                                                        {% set bar_color = 'bg-success' if log.authenticity_score >= 80
+                                                        else ('bg-warning text-dark' if log.authenticity_score >= 50
+                                                        else 'bg-danger') %}
+                                                        <div class="progress-bar {{bar_color}}"
+                                                            style="width: {{ log.authenticity_score }}%"></div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                {% if log.result == 'Verified' %}
+                                                <span class="badge bg-success rounded-pill px-3 py-2 shadow-sm"><i
+                                                        class="fa-solid fa-check"></i> Verified</span>
+                                                {% else %}
+                                                <span class="badge bg-danger rounded-pill px-3 py-2 shadow-sm"><i
+                                                        class="fa-solid fa-xmark"></i> Failed</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% else %}
+                                        <tr>
+                                            <td colspan="4" class="text-center text-muted py-4">No recent activity
+                                                found.</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const chartStatus = {{ chart_status | default ({}) | tojson | safe
+    }};
+    const chartMonths = {{ chart_months | default ({}) | tojson | safe }};
+    const chartBins = {{ chart_bins | default ({}) | tojson | safe }};
+
+    // 1. Authenticity Ratio (Doughnut)
+    const ctxConf = document.getElementById('confidenceChart');
+    if (ctxConf) {
+        new Chart(ctxConf, {
+            type: 'doughnut',
+            data: {
+                labels: ['Genuine', 'Suspicious', 'Fake'],
+                datasets: [{
+                    data: [chartStatus['Genuine'] || 0, chartStatus['Suspicious'] || 0, chartStatus['Fake'] || 0],
+                    backgroundColor: ['#2ecc71', '#f39c12', '#e74c3c'],
+                    borderWidth: 0,
+                    hoverOffset: 5
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+        });
+    }
+
+    // 2. Verifications per month (Line/Bar)
+    const ctxTrend = document.getElementById('trendChart');
+    if (ctxTrend) {
+        new Chart(ctxTrend, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(chartMonths),
+                datasets: [{
+                    label: 'Verifications',
+                    data: Object.values(chartMonths),
+                    backgroundColor: 'rgba(67, 97, 238, 0.7)',
+                    borderRadius: 4
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        });
+    }
+
+    // 3. Score distribution (Bar)
+    const ctxDist = document.getElementById('distChart');
+    if (ctxDist) {
+        new Chart(ctxDist, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(chartBins),
+                datasets: [{
+                    label: 'Certificates by Score',
+                    data: Object.values(chartBins),
+                    backgroundColor: '#9b59b6',
+                    borderRadius: 4
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        });
+    }
+    });
+</script>
+{% endblock %}

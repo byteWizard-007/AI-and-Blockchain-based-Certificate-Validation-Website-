@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5 pt-4">
+  <div class="row justify-content-center">
+
+    <div class="col-xl-7 col-lg-9 text-center mb-5" data-aos="fade-down">
+      <div class="badge bg-primary rounded-pill mb-3 px-3 py-2">
+        <i class="fa-solid fa-shield-halved text-white"></i>&nbsp;AI + Blockchain Verification Portal
+      </div>
+      <h2 class="fw-bold">Validate Certificate Authenticity</h2>
+      <p class="text-muted">Upload the certificate image <em>or</em> enter the register number — our system cross-checks MongoDB records and the blockchain ledger.</p>
+    </div>
+
+    <div class="col-xl-7 col-lg-9" data-aos="zoom-in">
+      <div class="card glass-card border-0 shadow-lg rounded-4 overflow-hidden">
+
+        <!-- Tabs -->
+        <div class="card-header border-0 p-0">
+          <ul class="nav nav-tabs nav-fill fw-bold" id="verifyTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active py-3" id="file-tab" data-bs-toggle="tab" data-bs-target="#filePane" type="button" role="tab">
+                <i class="fa-solid fa-image me-2"></i>Upload Certificate Image
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link py-3" id="id-tab" data-bs-toggle="tab" data-bs-target="#idPane" type="button" role="tab">
+                <i class="fa-solid fa-hashtag me-2"></i>Enter Register Number
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <div class="tab-content">
+
+          <!-- Tab 1: File Upload -->
+          <div class="tab-pane fade show active" id="filePane" role="tabpanel">
+            <form action="{{ url_for('verify') }}" method="POST" enctype="multipart/form-data" class="show-loader p-5">
+              <div class="upload-zone mb-4" id="dropZone">
+                <div class="upload-zone-inner">
+                  <i class="fa-solid fa-cloud-arrow-up fa-3x mb-3" style="color:var(--primary-color,#6366f1)"></i>
+                  <p class="fw-bold mb-1">Drag &amp; drop or click to select</p>
+                  <p class="small text-muted mb-3">JPG, PNG, JPEG · Max 5 MB</p>
+                  <label class="btn btn-outline-primary rounded-pill px-4" for="certFileInput">Browse File</label>
+                  <input type="file" id="certFileInput" name="certificate_file" accept=".jpg,.jpeg,.png" class="d-none" required>
+                </div>
+                <div id="filePreviewArea" class="mt-3 d-none">
+                  <img id="filePreview" src="" alt="Preview" class="img-thumbnail" style="max-height:200px;">
+                  <p id="fileName" class="small text-muted mt-1"></p>
+                </div>
+              </div>
+
+              <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold py-3">
+                  <i class="fa-solid fa-robot me-2"></i>Run AI + Blockchain Verification
+                </button>
+              </div>
+
+              <p class="small text-muted text-center mt-3 mb-0">
+                <i class="fa-solid fa-circle-info me-1 text-primary"></i>
+                Our AI will extract text via OCR, check tampering, detect seals, and cross-validate against the blockchain ledger.
+              </p>
+            </form>
+          </div>
+
+          <!-- Tab 2: Register Number -->
+          <div class="tab-pane fade" id="idPane" role="tabpanel">
+            <form action="{{ url_for('verify') }}" method="POST" class="show-loader p-5">
+              <label class="form-label fw-bold text-muted text-uppercase small mb-2">
+                <i class="fa-solid fa-address-card me-1"></i>Enter Register / Certificate Number
+              </label>
+              <div class="input-group input-group-lg shadow-sm mb-4 rounded-pill overflow-hidden border">
+                <input type="text" class="form-control border-0 px-4 bg-light" name="register_number"
+                       required placeholder="e.g. REG2024001 or 15BCE0001">
+                <button class="btn btn-primary px-4 fw-bold" type="submit">Search &amp; Verify</button>
+              </div>
+              <p class="small text-muted mb-0">
+                <i class="fa-solid fa-circle-info me-1 text-primary"></i>
+                This checks the register number directly against the MongoDB certificate ledger and validates the corresponding blockchain block hash.
+              </p>
+            </form>
+          </div>
+
+        </div><!-- /tab-content -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Drag-and-drop + preview ────────────────────────────────────────────────
+const dropZone   = document.getElementById('dropZone');
+const fileInput  = document.getElementById('certFileInput');
+const previewArea= document.getElementById('filePreviewArea');
+const previewImg = document.getElementById('filePreview');
+const fileNameEl = document.getElementById('fileName');
+
+fileInput.addEventListener('change', handleFile);
+
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', ()=> dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  if (e.dataTransfer.files.length) {
+    fileInput.files = e.dataTransfer.files;
+    handleFile({ target: fileInput });
+  }
+});
+
+function handleFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  fileNameEl.textContent = file.name + ' (' + (file.size/1024).toFixed(1) + ' KB)';
+  const reader = new FileReader();
+  reader.onload = ev => { previewImg.src = ev.target.result; previewArea.classList.remove('d-none'); };
+  reader.readAsDataURL(file);
+}
+</script>
+
+<style>
+.upload-zone {
+  border: 2px dashed rgba(99,102,241,.4);
+  border-radius: 1rem;
+  padding: 2rem 1rem;
+  text-align: center;
+  transition: border-color .2s, background .2s;
+  cursor: pointer;
+}
+.upload-zone.drag-over {
+  border-color: #6366f1;
+  background: rgba(99,102,241,.08);
+}
+.nav-tabs .nav-link { color: rgba(255,255,255,.6); border:none; border-bottom:3px solid transparent; background:transparent; }
+.nav-tabs .nav-link.active { color:#fff; border-bottom-color:#6366f1; background:transparent; }
+.nav-tabs { border-bottom: 1px solid rgba(255,255,255,.1); }
+</style>
+{% endblock %}

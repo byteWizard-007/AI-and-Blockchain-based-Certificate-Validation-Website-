@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5 pt-4">
+    <div class="row align-items-center justify-content-center">
+        <!-- Form Column -->
+        <div class="col-lg-5 col-md-8 col-sm-10 order-2 order-lg-1" data-aos="fade-right">
+            <div class="card glass-card p-5 shadow-lg border-0 rounded-4">
+                <div class="text-center mb-4">
+                    <div class="bg-primary bg-opacity-10 rounded-circle d-inline-block p-3 mb-3">
+                        <i class="fa-solid fa-user-plus fa-2x text-primary"></i>
+                    </div>
+                    <h2 class="fw-bold">Create Account</h2>
+                    <p class="text-muted">Register to join the platform</p>
+                </div>
+
+                <form action="{{ url_for('register') }}" method="POST" class="needs-validation show-loader">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">Full Name</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i
+                                    class="fa-solid fa-user text-muted"></i></span>
+                            <input type="text" class="form-control border-start-0 ps-0" name="name" required
+                                placeholder="John Doe">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">Email Address</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i
+                                    class="fa-solid fa-envelope text-muted"></i></span>
+                            <input type="email" class="form-control border-start-0 ps-0" name="email" required
+                                placeholder="name@domain.com">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i
+                                    class="fa-solid fa-lock text-muted"></i></span>
+                            <input type="password" class="form-control border-start-0 border-end-0 ps-0"
+                                id="register-password" name="password" required placeholder="••••••••">
+                            <span class="input-group-text bg-light cursor-pointer toggle-password"
+                                data-target="register-password" style="cursor: pointer;">
+                                <i class="fa-solid fa-eye text-muted"></i>
+                            </span>
+                        </div>
+                        <!-- Strength Meter -->
+                        <div id="strength-meter" class="mt-2 w-100"></div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold small text-muted">Role</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i
+                                    class="fa-solid fa-briefcase text-muted"></i></span>
+                            <select name="role" class="form-select border-start-0 ps-0 bg-light">
+                                <option value="verifier">Verifier (Can Verify Certificates)</option>
+                                <option value="admin">Admin (Can Upload Certificates)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill shadow fw-bold hover-scale">
+                        Register Account
+                    </button>
+
+                    <div class="text-center mt-4">
+                        <p class="small text-muted">Already have an account? <a href="{{ url_for('login') }}"
+                                class="text-primary fw-bold text-decoration-none">Log In</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Animation Column -->
+        <div class="col-lg-5 d-none d-lg-block text-center order-1 order-lg-2" data-aos="fade-left">
+            <lottie-player src="https://assets2.lottiefiles.com/packages/lf20_ucbyrun5.json" background="transparent"
+                speed="1" style="width: 100%; height: 400px;" loop autoplay></lottie-player>
+            <h3 class="fw-bold mt-4">Secure Network</h3>
+            <p class="text-muted">We utilize military-grade SHA-256 blockchain hashing to protect the integrity of your
+                documents.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

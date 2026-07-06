@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="hero-bg"></div>
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-5 mb-lg-0" data-aos="fade-right">
+                <div class="badge bg-primary text-white rounded-pill px-3 py-2 mb-3 shadow-sm">
+                    <i class="fa-solid fa-lock"></i> Secured with SHA-256
+                </div>
+                <h1 class="display-4 fw-bold mb-4" style="line-height: 1.2;">
+                    The Future of <br>
+                    <span class="text-primary"
+                        style="background: -webkit-linear-gradient(45deg, var(--primary-color), var(--success-color)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;">Certificate
+                        Validation</span>
+                </h1>
+                <p class="lead mb-4" style="font-weight: 300; max-width: 500px;">
+                    Eradicate counterfeit certificates globally. Our system combines the immutability of
+                    <strong>Blockchain</strong> with the precision of <strong>AI OCR</strong> to verify educational
+                    credentials instantly.
+                </p>
+                <div class="d-flex flex-wrap gap-3 mt-4">
+                    <a href="{{ url_for('verify') }}" class="btn btn-primary hover-scale rounded-pill px-4 py-3 shadow">
+                        <i class="fa-solid fa-magnifying-glass me-2"></i> Verify Certificate
+                    </a>
+                    <a href="{{ url_for('about') }}"
+                        class="btn btn-light hover-scale rounded-pill px-4 py-3 shadow border">
+                        <i class="fa-solid fa-book-open me-2"></i> How it Works
+                    </a>
+                </div>
+
+                <div class="mt-5 d-flex gap-4 opacity-75">
+                    <div class="d-flex align-items-center">
+                        <i class="fa-solid fa-brain fa-2x text-primary me-2"></i>
+                        <span class="fw-bold">AI Powered</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fa-solid fa-link fa-2x text-success me-2"></i>
+                        <span class="fw-bold">Blockchain Verified</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 text-center" data-aos="fade-left" data-aos-delay="200">
+                <!-- Fallback to illustration if lottie fails or loading -->
+                <div class="position-relative">
+                    <div class="position-absolute top-50 start-50 translate-middle w-100 h-100 bg-primary opacity-10 rounded-circle"
+                        style="filter: blur(50px); z-index: -1;"></div>
+                    <lottie-player src="https://assets3.lottiefiles.com/packages/lf20_jcikwtux.json"
+                        background="transparent" speed="1" style="width: 100%; height: 500px;" loop
+                        autoplay></lottie-player>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5 bg-light" id="features">
+    <div class="container my-5">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h2 class="fw-bold">Why choose CertiValidate?</h2>
+            <p class="text-muted">State-of-the-Art implementation ensuring absolute trust.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="card h-100 glass-card p-4 text-center hover-scale border-0 shadow-sm">
+                    <div class="icon-wrapper mb-3 text-primary mx-auto">
+                        <i class="fa-solid fa-cubes fa-3x"></i>
+                    </div>
+                    <h4 class="fw-bold">Immutable Ledger</h4>
+                    <p class="text-muted">Every certificate upload generates a verifiable SHA-256 block added to our
+                        custom Blockchain network.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="card h-100 glass-card p-4 text-center hover-scale border-0 shadow-sm">
+                    <div class="icon-wrapper mb-3 text-success mx-auto">
+                        <i class="fa-solid fa-robot fa-3x"></i>
+                    </div>
+                    <h4 class="fw-bold">AI Authenticity</h4>
+                    <p class="text-muted">Utilizes Tesseract OCR & TF-IDF Cosine Similarity to deeply inspect layouts
+                        and text to catch forgeries.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="card h-100 glass-card p-4 text-center hover-scale border-0 shadow-sm">
+                    <div class="icon-wrapper mb-3 text-danger mx-auto">
+                        <i class="fa-solid fa-qrcode fa-3x"></i>
+                    </div>
+                    <h4 class="fw-bold">QR Verification</h4>
+                    <p class="text-muted">Instant validation via QR Codes attached to the certificate reports. Download
+                        full PDF Validation Audits.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA section -->
+<section class="py-5 mb-5">
+    <div class="container">
+        <div class="glass-card p-5 text-center shadow-lg" data-aos="zoom-in"
+            style="background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(247, 37, 133, 0.05));">
+            <h2 class="fw-bold mb-3">Ready to issue secure certificates?</h2>
+            <p class="lead mb-4">Register as an Institution Admin to start uploading.</p>
+            <a href="{{ url_for('register') }}"
+                class="btn btn-primary btn-lg rounded-pill shadow px-5 py-3 hover-scale">Get Started Now</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

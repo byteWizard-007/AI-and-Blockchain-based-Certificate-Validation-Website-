@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fa-solid fa-clock-rotate-left text-primary me-2"></i> Verification History</h2>
+        <div>
+            <a href="{{ url_for('export_data', data_type='logs') }}"
+                class="btn btn-success rounded-pill px-3 shadow-sm"><i class="fa-solid fa-download me-1"></i> Export
+                Logs</a>
+        </div>
+    </div>
+
+    <div class="card glass-card border-0 shadow-sm p-4">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Time</th>
+                        <th>Reg. No</th>
+                        <th>Student Name</th>
+                        <th>Verified By</th>
+                        <th>AI Score</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in logs %}
+                    <tr>
+                        <td class="text-muted small">{{ log.timestamp }}</td>
+                        <td class="fw-bold">{{ log.register_number or 'N/A' }}</td>
+                        <td>{{ log.student_name or 'N/A' }}</td>
+                        <td><i class="fa-solid fa-user-shield text-primary me-1"></i> {{ log.verified_by }}</td>
+                        <td>
+                            <span
+                                class="badge {% if log.authenticity_score >= 80 %}bg-success{% elif log.authenticity_score >= 50 %}bg-warning text-dark{% else %}bg-danger{% endif %} rounded-pill px-2">
+                                {{ log.authenticity_score }}%
+                            </span>
+                        </td>
+                        <td>
+                            {% if log.result == 'Verified' %}
+                            <span class="badge bg-success rounded-pill px-3 py-2"><i class="fa-solid fa-check me-1"></i>
+                                Verified</span>
+                            {% else %}
+                            <span class="badge bg-danger rounded-pill px-3 py-2"><i class="fa-solid fa-times me-1"></i>
+                                {{ log.result }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-5">No verification logs found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

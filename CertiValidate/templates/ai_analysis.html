@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5 pt-4">
+    <div class="row align-items-center mb-5">
+        <div class="col-lg-6" data-aos="fade-right">
+            <h2 class="fw-bold display-6 mb-3"><i
+                    class="fa-solid fa-brain text-primary pb-2 border-bottom border-primary border-3"></i> Pure AI
+                Testing Playground</h2>
+            <p class="lead text-muted">Test our Machine Learning model against any document without saving to the
+                Blockchain.</p>
+            <p class="text-muted small">Our proprietary ML system utilizes OCR Tesseract paired with TF-IDF
+                Vectorization and Cosine Similarity functions against pre-trained structural templates to calculate
+                genuine probabilities.</p>
+        </div>
+        <div class="col-lg-6 text-center" data-aos="fade-left">
+            <lottie-player src="https://assets8.lottiefiles.com/packages/lf20_5n8ht3ba.json" background="transparent"
+                speed="1" style="width: 100%; height: 300px;" loop autoplay></lottie-player>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <!-- Upload Form -->
+        <div class="col-lg-5" data-aos="zoom-in" data-aos-delay="100">
+            <div class="card glass-card h-100 p-4 shadow border-0 rounded-4">
+                <h4 class="fw-bold mb-4">Input Source</h4>
+                <form id="aiTestForm" enctype="multipart/form-data">
+                    <div class="border border-primary border-2 p-5 rounded-4 text-center bg-light"
+                        style="border-style: dashed !important; cursor: pointer; position: relative;" id="dropzone">
+                        <i class="fa-solid fa-cloud-arrow-up fa-3x text-primary mb-3"></i>
+                        <h5 class="fw-bold">Drag & Drop</h5>
+                        <p class="text-muted small">or click to strictly select file</p>
+                        <input type="file" name="certificate_file" id="aiFile" accept=".png, .jpg, .jpeg, .pdf" required
+                            style="opacity: 0; position: absolute; inset: 0; width: 100%; height: 100%; cursor: pointer;">
+                        <div id="fileName" class="fw-bold text-success mt-2 font-monospace small"></div>
+                    </div>
+
+                    <button type="submit"
+                        class="btn btn-primary w-100 py-3 mt-4 rounded-pill shadow hover-scale fw-bold"
+                        id="aiSubmitBtn">
+                        <i class="fa-solid fa-microchip me-2"></i> Run AI Analysis
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Result Container -->
+        <div class="col-lg-7" data-aos="zoom-in" data-aos-delay="200">
+            <div class="card glass-card h-100 p-4 shadow border-0 rounded-4 d-flex flex-column align-items-center justify-content-center bg-light"
+                id="aiPlaceholder">
+                <i class="fa-solid fa-chart-pie fa-4x text-muted mb-3 opacity-25"></i>
+                <h4 class="fw-bold text-muted opacity-50">Awaiting Input...</h4>
+                <p class="text-muted small mb-0 opacity-50">Analysis results will magically render here.</p>
+            </div>
+
+            <!-- Actually shows content when JS fills it -->
+            <div class="card glass-card h-100 p-4 shadow border-0 rounded-4 d-none" id="aiResultContainer">
+                <h4 class="fw-bold mb-4 border-bottom pb-2">Analysis Results</h4>
+
+                <div class="d-flex align-items-center justify-content-around mb-4">
+                    <div class="text-center">
+                        <div class="progress-circle shadow-sm" id="dynamicCircle">
+                            <div class="progress-value" id="circleValue">0%</div>
+                        </div>
+                    </div>
+                    <div class="text-start">
+                        <h5 class="fw-bold mb-1">Classification:</h5>
+                        <div class="fs-1 fw-bold font-monospace" id="resultLabelText">...</div>
+                    </div>
+                </div>
+
+                <div class="row mt-4 px-2 g-3" id="breakdownStats">
+                    <!-- Dynamically populated -->
+                </div>
+
+                <div class="mt-4 p-3 bg-white rounded border" style="max-height: 120px; overflow-y: auto;">
+                    <div class="small fw-bold text-muted mb-2"><i class="fa-solid fa-file-lines me-1"></i> Raw Extracted
+                        Text Context:</div>
+                    <code class="small text-dark" id="rawTextDump" style="white-space: pre-wrap;"></code>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('aiFile').addEventListener('change', function (e) {
+        if (this.files.length > 0) {
+            document.getElementById('fileName').innerText = this.files[0].name;
+        }
+    });
+
+    document.getElementById('aiTestForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const btn = document.getElementById('aiSubmitBtn');
+        const originalBtnHTML = btn.innerHTML;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Analyzing...';
+        btn.disabled = true;
+
+        const formData = new FormData(this);
+
+        fetch("{{ url_for('ai_analysis_page') }}", {
+            method: "POST",
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                btn.innerHTML = originalBtnHTML;
+                btn.disabled = false;
+
+                // Hide placeholder, show container
+                document.getElementById('aiPlaceholder').classList.add('d-none');
+                document.getElementById('aiResultContainer').classList.remove('d-none');
+
+                let percentage = data.final_score;
+                let color = '#e74c3c'; // red - fake
+                if (percentage >= 50 && percentage < 80) color = '#f39c12'; // yellow
+                if (percentage >= 80) color = '#2ecc71'; // green
+
+                // Use external JS function if loaded, or inline logic
+                animateCircularProgress('dynamicCircle', percentage, data.classification);
+
+                let label = document.getElementById('resultLabelText');
+                label.innerText = data.classification.toUpperCase();
+                label.style.color = color;
+
+                // Breakdown mapping
+                const keys = {
+                    'header': 'Header Integrity',
+                    'logo': 'Seal / Logo Detection',
+                    'reg_no': 'Pattern Validation',
+                    'signature': 'Signature Verification',
+                    'text_sim': 'TF-IDF Text Similarity'
+                };
+
+                let html = '';
+                for (const [key, val] of Object.entries(data.breakdown)) {
+                    html += `
+            <div class="col-6">
+                <div class="d-flex justify-content-between text-muted small fw-bold">
+                    <span>${keys[key] || key}</span>
+                    <span>${val} pts</span>
+                </div>
+                <div class="progress" style="height: 5px;">
+                    <div class="progress-bar ${val > 0 ? 'bg-primary' : 'bg-secondary'}" style="width: ${val > 0 ? '100%' : '0'}"></div>
+                </div>
+            </div>
+            `;
+                }
+                document.getElementById('breakdownStats').innerHTML = html;
+                document.getElementById('rawTextDump').innerText = data.extracted_content;
+
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                btn.innerHTML = originalBtnHTML;
+                btn.disabled = false;
+                alert("Failed to process document.");
+            });
+    });
+</script>
+{% endblock %}

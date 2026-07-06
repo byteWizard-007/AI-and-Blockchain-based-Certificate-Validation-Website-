@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5 pt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8" data-aos="fade-up">
+            <div class="card glass-card border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="card-header bg-primary text-white text-center py-4 border-0"
+                    style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;">
+                    <i class="fa-solid fa-cloud-arrow-up fa-3x mb-2"></i>
+                    <h3 class="fw-bold mb-0">Upload & Secure Certificate</h3>
+                    <p class="mb-0 text-white-50">Upload to the immutable ledger and run AI inspection</p>
+                </div>
+
+                <div class="card-body p-5">
+                    <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data"
+                        class="needs-validation show-loader">
+
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-muted small">Student Full Name</label>
+                                <input type="text" class="form-control bg-light" name="student_name" required
+                                    placeholder="e.g. John Doe">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-muted small">Register Number</label>
+                                <input type="text" class="form-control bg-light" name="register_number" required
+                                    placeholder="e.g. REG2023001">
+                            </div>
+                        </div>
+
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-muted small">University / Institution</label>
+                                <input type="text" class="form-control bg-light" name="university_name"
+                                    placeholder="e.g. VIT University">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-muted small">Issue Date</label>
+                                <input type="date" class="form-control bg-light" name="issue_date">
+                            </div>
+                        </div>
+
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-muted small">Course</label>
+                                <input type="text" class="form-control bg-light" name="course" required
+                                    placeholder="e.g. B.Tech Computer Science">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-muted small">Year of Passing</label>
+                                <input type="number" class="form-control bg-light" name="year" required min="1990"
+                                    max="2099" placeholder="e.g. 2026">
+                            </div>
+                        </div>
+
+                        <div class="mb-5">
+                            <label class="form-label fw-bold text-muted small">Certificate Document (Image/PDF)</label>
+                            <input type="file" class="form-control border-primary" name="certificate"
+                                accept=".png, .jpg, .jpeg, .pdf" required
+                                style="border: 2px dashed var(--primary-color); padding: 1.5rem; background: rgba(67, 97, 238, 0.05); cursor: pointer;">
+                            <div class="form-text mt-2"><i class="fa-solid fa-circle-info text-primary"></i> Accepted
+                                formats: JPG, PNG, PDF. Max size: 5MB.</div>
+                        </div>
+
+                        <hr class="mb-4">
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="{{ url_for('dashboard') }}"
+                                class="btn btn-outline-secondary rounded-pill px-4">Cancel</a>
+                            <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 shadow hover-scale">
+                                <i class="fa-solid fa-lock me-2"></i> Submit & Secure
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

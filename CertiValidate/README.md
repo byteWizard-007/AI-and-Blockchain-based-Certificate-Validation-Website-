@@ -2,6 +2,9 @@
 
 A comprehensive AI & Blockchain Based Certificate Validation System built with Python, Flask, ML, and a custom implementation of SHA-256 Blockchain.
 
+
+Live Proj : https://certivalidate.vercel.app/
+
 ## Features
 - **Custom Blockchain:** SHA-256 encrypted block generation for each certificate.
 - **AI Authenticity Analysis:** Utilizes Pytesseract (OCR) and TF-IDF Cosine Similarity to detect fake certificates based on textual similarities and patterns.
